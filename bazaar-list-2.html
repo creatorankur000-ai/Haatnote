@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Bazaar Parchi — तेरी लिस्ट</title>
+<meta name="theme-color" content="#4A5D3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bazaar List">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234A5D3A'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"></script>
+<style>
+  :root{
+    --kraft:#E7D9BE; --kraft-dark:#D9C6A3; --ink:#2B2620; --ink-soft:#5C5346;
+    --sabzi:#4A5D3A; --sabzi-dark:#374528; --tamatar:#BF4E30; --haldi:#D6952B;
+    --paper:#FBF6EC; --line:#C9B896;
+  }
+  body.dark{
+    --kraft:#22201B; --kraft-dark:#2C2922; --ink:#EDE4D3; --ink-soft:#B5A78D;
+    --sabzi:#7FA05E; --sabzi-dark:#5C7A44; --tamatar:#E07454; --haldi:#E8AC4C;
+    --paper:#2A2620; --line:#4A4436;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"), var(--kraft);
+    color:var(--ink); font-family:'Fraunces',serif; min-height:100vh; padding:20px 14px 60px;
+    transition:background .2s,color .2s;
+  }
+  .wrap{max-width:480px;margin:0 auto;}
+
+  .topbar{display:flex;justify-content:flex-end;gap:10px;margin-bottom:8px;}
+  .icon-btn{
+    width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);
+    color:var(--sabzi-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;
+    font-size:17px;box-shadow:0 3px 8px rgba(43,38,32,0.12);transition:.15s;
+  }
+  .icon-btn:active{transform:scale(0.92);}
+  .icon-btn.active{background:var(--sabzi);color:#fff;border-color:var(--sabzi);}
+  #archiveBtn{color:var(--haldi);}
+  #darkBtn{color:var(--ink-soft);}
+
+  .clip{width:64px;height:26px;margin:0 auto -14px;background:linear-gradient(135deg,#8a8378,#5c574d);border-radius:6px 6px 3px 3px;position:relative;z-index:3;box-shadow:0 3px 6px rgba(0,0,0,0.25);}
+  .clip::after{content:'';position:absolute;left:50%;top:6px;transform:translateX(-50%);width:34px;height:8px;border:3px solid #3d3a34;border-bottom:none;border-radius:6px 6px 0 0;}
+  header{background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:22px 20px 16px;position:relative;box-shadow:0 8px 0 -3px rgba(0,0,0,0.08),0 10px 18px rgba(43,38,32,0.18);transform:rotate(-0.6deg);}
+  header::before{content:'';position:absolute;inset:6px;border:1px dashed var(--line);pointer-events:none;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--sabzi-dark);text-transform:uppercase;font-weight:600;}
+  h1{font-family:'Baloo 2',cursive;font-size:29px;margin:4px 0 2px;color:var(--ink);display:flex;align-items:center;gap:8px;}
+  h1 i{color:var(--tamatar);font-size:21px;}
+  .sub{font-size:13px;color:var(--ink-soft);font-style:italic;}
+  .date-line{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px;}
+
+  /* list tabs */
+  .list-tabs{display:flex;gap:7px;margin-top:14px;overflow-x:auto;padding-bottom:4px;}
+  .list-tab{
+    font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 12px;border-radius:16px;
+    border:1.3px solid var(--line);background:var(--paper);color:var(--ink-soft);cursor:pointer;
+    white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:6px;
+  }
+  .list-tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .list-tab .close{opacity:.5;font-size:10px;}
+  .list-tab.new-tab{border-style:dashed;}
+
+  .addbar{margin-top:12px;background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:12px;box-shadow:0 6px 14px rgba(43,38,32,0.14);}
+  .addrow{display:flex;gap:7px;}
+  .addrow input[type=text]{flex:1;min-width:0;border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:11px 12px;font-family:'Fraunces',serif;font-size:15px;color:var(--ink);}
+  body.dark .addrow input,body.dark .qty-input,body.dark .budget-row input,body.dark .price-input{background:#332f27;}
+  .addrow input[type=text]:focus{outline:none;border-color:var(--sabzi);}
+  .qty-input,.price-input{width:56px;border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:11px 4px;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:center;color:var(--ink);}
+  .qty-input:focus,.price-input:focus{outline:none;border-color:var(--sabzi);}
+  .mic-btn{background:var(--haldi);color:#fff;border:none;border-radius:6px;width:42px;font-size:16px;cursor:pointer;flex-shrink:0;transition:.15s;}
+  .mic-btn.listening{background:var(--tamatar);animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+  .addbtn{background:var(--sabzi);color:#fff;border:none;border-radius:6px;width:42px;font-size:18px;cursor:pointer;transition:.15s;flex-shrink:0;}
+  .addbtn:active{transform:scale(0.92);background:var(--sabzi-dark);}
+  .field-row2{display:flex;gap:7px;margin-top:7px;}
+  .hint-row{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);opacity:.65;margin-top:6px;text-align:right;}
+
+  .cat-select{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
+  .cat-chip{font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 10px;border-radius:20px;border:1.3px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;transition:.15s;user-select:none;}
+  body.dark .cat-chip{background:#332f27;}
+  .cat-chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  .quick-row{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;}
+  .quick-chip{font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 9px;border-radius:14px;background:var(--kraft-dark);border:1px dashed var(--ink-soft);color:var(--ink-soft);cursor:pointer;}
+  .quick-chip:active{background:var(--sabzi);color:#fff;}
+
+  .receipt{margin-top:16px;background:var(--paper);border:1.5px solid var(--ink);box-shadow:0 8px 20px rgba(43,38,32,0.16);position:relative;
+    clip-path:polygon(0% 0%,100% 0%,100% 100%,97% 98%,94% 100%,91% 98%,88% 100%,85% 98%,82% 100%,79% 98%,76% 100%,73% 98%,70% 100%,67% 98%,64% 100%,61% 98%,58% 100%,55% 98%,52% 100%,49% 98%,46% 100%,43% 98%,40% 100%,37% 98%,34% 100%,31% 98%,28% 100%,25% 98%,22% 100%,19% 98%,16% 100%,13% 98%,10% 100%,7% 98%,4% 100%,1% 98%,0% 100%);
+    padding-bottom:16px;}
+  .receipt-head{padding:16px 18px 10px;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;align-items:baseline;}
+  .receipt-head .cat-title{font-family:'Baloo 2',cursive;font-size:17px;color:var(--sabzi-dark);display:flex;align-items:center;gap:6px;}
+  .receipt-head .count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+
+  ul.items{list-style:none;margin:0;padding:6px 12px 4px;}
+  li.item{display:flex;align-items:center;gap:9px;padding:9px 6px;border-bottom:1px solid rgba(201,184,150,0.5);}
+  li.item:last-child{border-bottom:none;}
+  .checkbox{width:21px;height:21px;border:2px solid var(--sabzi);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;transition:.12s;}
+  body.dark .checkbox{background:#332f27;}
+  .checkbox.checked{background:var(--sabzi);}
+  .checkbox i{color:#fff;font-size:12px;display:none;}
+  .checkbox.checked i{display:block;}
+  .item-name{flex:1;font-size:15.5px;transition:.15s;min-width:0;}
+  .item.done .item-name{text-decoration:line-through;color:var(--ink-soft);opacity:.6;}
+  .item.done .item-qty,.item.done .item-price{opacity:.5;}
+  .item-qty{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--sabzi-dark);background:rgba(74,93,58,0.1);padding:3px 7px;border-radius:10px;white-space:nowrap;}
+  .item-price{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--haldi);white-space:nowrap;}
+  .del{background:none;border:none;color:var(--tamatar);opacity:.55;cursor:pointer;font-size:14px;padding:4px;}
+  .del:active{opacity:1;}
+
+  .empty-cat{padding:16px 18px;font-size:13px;color:var(--ink-soft);font-style:italic;text-align:center;}
+
+  .foot{padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .foot .progress-wrap{flex:1;height:6px;background:var(--kraft-dark);border-radius:4px;margin:0 10px;overflow:hidden;}
+  .foot .progress{height:100%;background:var(--sabzi);transition:width .3s;}
+
+  .budget-row{margin:14px 18px 0;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .budget-row .total{color:var(--haldi);font-weight:600;}
+  .budget-row2{margin:8px 18px 0;display:flex;justify-content:space-between;align-items:center;}
+  .budget-row2 label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .budget-row2 input{width:90px;border:1.3px solid var(--line);border-radius:6px;padding:6px 8px;font-family:'JetBrains Mono',monospace;text-align:right;font-size:12.5px;background:#fff;color:var(--ink);}
+  .over{color:var(--tamatar) !important;}
+
+  .actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .btn{flex:1;min-width:120px;padding:13px;border-radius:8px;border:none;font-family:'Baloo 2',cursive;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:.15s;}
+  .btn-wa{background:#25D366;color:#0b3d1f;box-shadow:0 4px 0 #1aa851;flex-basis:100%;}
+  .btn-wa:active{transform:translateY(3px);box-shadow:none;}
+  .btn-secondary{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);}
+  .btn-secondary:active{background:rgba(0,0,0,0.05);}
+  .btn-clear{color:var(--tamatar);border-color:var(--tamatar);}
+
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(100px);
+    background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:10px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;display:flex;align-items:center;gap:14px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);transition:transform .25s;z-index:50;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .toast button{background:var(--haldi);color:var(--ink);border:none;padding:5px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-weight:700;cursor:pointer;}
+
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--paper);border-radius:12px;padding:20px;max-width:340px;width:100%;border:1.5px solid var(--ink);}
+  .modal h3{font-family:'Baloo 2',cursive;margin:0 0 12px;font-size:18px;}
+  .modal input[type=text]{width:100%;padding:10px;border-radius:6px;border:1.3px solid var(--line);font-family:'Fraunces',serif;font-size:15px;margin-bottom:10px;background:#fff;color:var(--ink);}
+  .modal-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+  .modal-row select,.modal-row input[type=time]{flex:1;padding:9px;border-radius:6px;border:1.3px solid var(--line);font-family:'JetBrains Mono',monospace;background:#fff;color:var(--ink);}
+  .modal-actions{display:flex;gap:8px;margin-top:8px;}
+  .modal-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-family:'Baloo 2',cursive;font-size:14px;cursor:pointer;}
+  .m-save{background:var(--sabzi);color:#fff;}
+  .m-cancel{background:var(--kraft-dark);color:var(--ink);}
+  .archive-item{padding:10px;border:1px dashed var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .archive-item:active{background:var(--kraft-dark);}
+
+  .foot-note{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);opacity:.7;letter-spacing:.03em;}
+
+  @media (max-width:360px){h1{font-size:25px;}.item-name{font-size:14.5px;}.btn{font-size:13.5px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="icon-btn" id="reminderBtn" title="Reminder"><i class="fa-solid fa-bell"></i></div>
+    <div class="icon-btn" id="archiveBtn" title="पिछली लिस्ट"><i class="fa-solid fa-clock-rotate-left"></i></div>
+    <div class="icon-btn" id="darkBtn" title="Dark mode"><i class="fa-solid fa-moon"></i></div>
+  </div>
+
+  <div class="clip"></div>
+  <header>
+    <div class="eyebrow">आज की परची</div>
+    <h1><i class="fa-solid fa-basket-shopping"></i>Bazaar List</h1>
+    <div class="sub">jo bhool jaaye woh yahin likh de, bhai</div>
+    <div class="date-line">
+      <span id="today-date">—</span>
+      <span id="item-total">0 items</span>
+    </div>
+    <div class="list-tabs" id="listTabs"></div>
+  </header>
+
+  <div class="addbar">
+    <div class="addrow">
+      <input type="text" id="itemInput" placeholder="जैसे — आलू, दूध, टमाटर..." autocomplete="off" list="itemSuggestions">
+      <datalist id="itemSuggestions"></datalist>
+      <button class="mic-btn" id="micBtn" title="बोलकर जोड़ो"><i class="fa-solid fa-microphone"></i></button>
+      <button class="addbtn" id="addBtn" title="List mein जोड़ो"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="field-row2">
+      <input type="text" id="qtyInput" class="qty-input" placeholder="qty — 1kg">
+      <input type="number" id="priceInput" class="price-input" placeholder="₹ price">
+    </div>
+    <div class="cat-select" id="catSelect">
+      <div class="cat-chip active" data-cat="sabzi">🥬 सब्ज़ी</div>
+      <div class="cat-chip" data-cat="dairy">🥛 दूध-दही</div>
+      <div class="cat-chip" data-cat="kirana">🛒 किराना</div>
+      <div class="cat-chip" data-cat="masale">🌶️ मसाले</div>
+      <div class="cat-chip" data-cat="other">📦 और</div>
+    </div>
+    <div class="quick-row" id="quickRow"></div>
+  </div>
+
+  <div id="receiptContainer"></div>
+
+  <div class="actions">
+    <button class="btn btn-wa" id="waBtn"><i class="fa-brands fa-whatsapp"></i>Share on WhatsApp</button>
+    <button class="btn btn-secondary btn-clear" id="clearBtn"><i class="fa-solid fa-broom"></i>List साफ़ करो</button>
+  </div>
+
+  <div class="foot-note">local hi save hoti hai list — kahin bheji nahi jaati · होम स्क्रीन पर add karne ke liye browser menu se "Add to Home Screen" चुनो</div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button id="toastUndo">Undo</button>
+</div>
+
+<div class="modal-bg" id="reminderModal">
+  <div class="modal">
+    <h3>🔔 रोज़ याद दिलाओ</h3>
+    <div class="modal-row">
+      <input type="time" id="reminderTime" value="18:00">
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:-4px;">note: browser tab/app khula hona chahiye us waqt — bina backend ke closed-app notification possible nahi</p>
+    <div class="modal-actions">
+      <button class="m-cancel" id="reminderOff">Off कर दो</button>
+      <button class="m-save" id="reminderSave">Set करो</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="archiveModal">
+  <div class="modal">
+    <h3>🕰️ पिछली लिस्ट्स</h3>
+    <div id="archiveList" style="max-height:300px;overflow-y:auto;"></div>
+    <div class="modal-actions">
+      <button class="m-cancel" id="archiveClose" style="flex:1;">बंद करो</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="newListModal">
+  <div class="modal">
+    <h3>📋 नई लिस्ट</h3>
+    <input type="text" id="newListName" placeholder="जैसे — Diwali Shopping">
+    <div class="modal-actions">
+      <button class="m-cancel" id="newListCancel">रद्द करो</button>
+      <button class="m-save" id="newListSave">बनाओ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS = {
+  sabzi:{label:'सब्ज़ी', emoji:'🥬'}, dairy:{label:'दूध-दही', emoji:'🥛'},
+  kirana:{label:'किराना', emoji:'🛒'}, masale:{label:'मसाले', emoji:'🌶️'}, other:{label:'और सामान', emoji:'📦'}
+};
+const FREQUENT = {
+  sabzi:['आलू','प्याज़','टमाटर','धनिया','हरी मिर्च','अदरक-लहसुन'],
+  dairy:['दूध','दही','पनीर','मक्खन'],
+  kirana:['आटा','चावल','चीनी','तेल','ब्रेड'],
+  masale:['नमक','हल्दी','जीरा','लाल मिर्च']
+};
+
+// ---------- state ----------
+let lists = JSON.parse(localStorage.getItem('bazaarLists') || 'null') || {
+  'default': { name:'Weekly Bazaar', items:[], budget:'' }
+};
+let currentListId = localStorage.getItem('bazaarCurrentListId') || Object.keys(lists)[0];
+if(!lists[currentListId]) currentListId = Object.keys(lists)[0];
+let archive = JSON.parse(localStorage.getItem('bazaarArchive') || '[]');
+let itemHistory = JSON.parse(localStorage.getItem('bazaarItemHistory') || '[]');
+let activeCat = 'sabzi';
+let pendingDelete = null;
+let toastTimer = null;
+
+const $ = id => document.getElementById(id);
+const itemInput = $('itemInput'), qtyInput = $('qtyInput'), priceInput = $('priceInput');
+const catSelect = $('catSelect'), quickRow = $('quickRow'), receiptContainer = $('receiptContainer');
+const todayDate = $('today-date'), itemTotal = $('item-total');
+
+const days=['रविवार','सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+const months=['जन','फ़र','मार्च','अप्रैल','मई','जून','जुल','अग','सित','अक्टू','नव','दिस'];
+function setDate(){ const d=new Date(); todayDate.textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`; }
+setDate();
+
+function saveAll(){
+  localStorage.setItem('bazaarLists', JSON.stringify(lists));
+  localStorage.setItem('bazaarCurrentListId', currentListId);
+  localStorage.setItem('bazaarArchive', JSON.stringify(archive));
+  localStorage.setItem('bazaarItemHistory', JSON.stringify(itemHistory));
+}
+function currentList(){ return lists[currentListId]; }
+
+// ---------- dark mode ----------
+if(localStorage.getItem('bazaarDark')==='1'){ document.body.classList.add('dark'); $('darkBtn').classList.add('active'); }
+$('darkBtn').onclick = ()=>{
+  document.body.classList.toggle('dark');
+  const on = document.body.classList.contains('dark');
+  $('darkBtn').classList.toggle('active', on);
+  localStorage.setItem('bazaarDark', on ? '1':'0');
+};
+
+// ---------- list tabs ----------
+function renderTabs(){
+  const tabWrap = $('listTabs');
+  tabWrap.innerHTML='';
+  Object.keys(lists).forEach(id=>{
+    const tab = document.createElement('div');
+    tab.className='list-tab' + (id===currentListId ? ' active':'');
+    tab.innerHTML = `<span>${escapeHtml(lists[id].name)}</span>` + (Object.keys(lists).length>1 ? `<span class="close" data-id="${id}"><i class="fa-solid fa-xmark"></i></span>` : '');
+    tab.onclick = (e)=>{
+      if(e.target.closest('.close')) return;
+      currentListId = id; saveAll(); render();
+    };
+    const closeBtn = tab.querySelector('.close');
+    if(closeBtn){
+      closeBtn.onclick = (e)=>{
+        e.stopPropagation();
+        if(confirm(`"${lists[id].name}" list delete kar du?`)){
+          delete lists[id];
+          if(currentListId===id) currentListId = Object.keys(lists)[0];
+          saveAll(); render();
+        }
+      };
+    }
+    tabWrap.appendChild(tab);
+  });
+  const addTab = document.createElement('div');
+  addTab.className='list-tab new-tab';
+  addTab.innerHTML = '<i class="fa-solid fa-plus"></i>';
+  addTab.onclick = ()=>{ $('newListName').value=''; $('newListModal').classList.add('show'); $('newListName').focus(); };
+  tabWrap.appendChild(addTab);
+}
+$('newListCancel').onclick = ()=> $('newListModal').classList.remove('show');
+$('newListSave').onclick = ()=>{
+  const name = $('newListName').value.trim();
+  if(!name) return;
+  const id = 'list_' + Date.now();
+  lists[id] = { name, items:[], budget:'' };
+  currentListId = id;
+  saveAll(); render();
+  $('newListModal').classList.remove('show');
+};
+
+// ---------- quick chips ----------
+catSelect.querySelectorAll('.cat-chip').forEach(chip=>{
+  chip.onclick = ()=>{
+    catSelect.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    activeCat = chip.dataset.cat;
+    renderQuick();
+  };
+});
+function renderQuick(){
+  quickRow.innerHTML='';
+  (FREQUENT[activeCat]||[]).forEach(name=>{
+    const chip = document.createElement('div');
+    chip.className='quick-chip'; chip.textContent = '+ ' + name;
+    chip.onclick = ()=> addItem(name,'','',activeCat);
+    quickRow.appendChild(chip);
+  });
+}
+
+// ---------- autosuggest ----------
+function renderSuggestions(){
+  const dl = $('itemSuggestions');
+  dl.innerHTML = itemHistory.map(n=>`<option value="${escapeHtml(n)}">`).join('');
+}
+function rememberItemName(name){
+  if(!itemHistory.includes(name)){
+    itemHistory.unshift(name);
+    itemHistory = itemHistory.slice(0,60);
+    renderSuggestions();
+  }
+}
+
+// ---------- voice input ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBtn = $('micBtn');
+if(SR){
+  const rec = new SR();
+  rec.lang = 'hi-IN';
+  rec.interimResults = false;
+  let listening = false;
+  micBtn.onclick = ()=>{
+    if(listening){ rec.stop(); return; }
+    try{ rec.start(); listening=true; micBtn.classList.add('listening'); }catch(e){}
+  };
+  rec.onresult = (e)=>{
+    const text = e.results[0][0].transcript;
+    itemInput.value = text;
+  };
+  rec.onend = ()=>{ listening=false; micBtn.classList.remove('listening'); };
+  rec.onerror = ()=>{ listening=false; micBtn.classList.remove('listening'); };
+} else {
+  micBtn.onclick = ()=> alert('Ye browser voice input support nahi karta, type karke daal do 🙏');
+}
+
+// ---------- add / toggle / delete ----------
+function addItem(name, qty, price, cat){
+  name = name.trim();
+  if(!name) return;
+  currentList().items.push({ id: Date.now()+Math.random(), name, qty:(qty||'').trim(), price: price?parseFloat(price):null, cat, done:false });
+  rememberItemName(name);
+  saveAll(); render();
+}
+$('addBtn').onclick = ()=>{
+  addItem(itemInput.value, qtyInput.value, priceInput.value, activeCat);
+  itemInput.value=''; qtyInput.value=''; priceInput.value=''; itemInput.focus();
+};
+itemInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ $('addBtn').click(); } });
+qtyInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ $('addBtn').click(); } });
+priceInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ $('addBtn').click(); } });
+
+function toggleDone(id){
+  const it = currentList().items.find(i=>i.id===id);
+  if(it){ it.done=!it.done; saveAll(); render(); }
+}
+function deleteItem(id){
+  const items = currentList().items;
+  const idx = items.findIndex(i=>i.id===id);
+  if(idx===-1) return;
+  pendingDelete = { item: items[idx], idx };
+  items.splice(idx,1);
+  saveAll(); render();
+  showToast(`"${pendingDelete.item.name}" हटाया`, ()=>{
+    currentList().items.splice(pendingDelete.idx,0,pendingDelete.item);
+    saveAll(); render();
+  });
+}
+
+function showToast(msg, undoFn){
+  $('toastMsg').textContent = msg;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  const undoBtn = $('toastUndo');
+  undoBtn.onclick = ()=>{ undoFn(); $('toast').classList.remove('show'); };
+  toastTimer = setTimeout(()=> $('toast').classList.remove('show'), 4000);
+}
+
+// ---------- render ----------
+function render(){
+  renderTabs();
+  const items = currentList().items;
+  receiptContainer.innerHTML='';
+  const catsWithItems = Object.keys(CATS).filter(c=>items.some(i=>i.cat===c));
+
+  if(catsWithItems.length===0){
+    receiptContainer.innerHTML = `<div class="receipt"><div class="empty-cat">परची खाली है — ऊपर से कुछ जोड़ो 🥕</div></div>`;
+  } else {
+    catsWithItems.forEach((catKey,idx)=>{
+      const catItems = items.filter(i=>i.cat===catKey);
+      const doneCount = catItems.filter(i=>i.done).length;
+      const card = document.createElement('div');
+      card.className='receipt';
+      card.innerHTML = `
+        <div class="receipt-head">
+          <div class="cat-title">${CATS[catKey].emoji} ${CATS[catKey].label}</div>
+          <div class="count">${doneCount}/${catItems.length}</div>
+        </div>
+        <ul class="items"></ul>`;
+      const ul = card.querySelector('.items');
+      catItems.forEach(it=>{
+        const li = document.createElement('li');
+        li.className = 'item' + (it.done?' done':'');
+        li.innerHTML = `
+          <div class="checkbox ${it.done?'checked':''}"><i class="fa-solid fa-check"></i></div>
+          <div class="item-name">${escapeHtml(it.name)}</div>
+          ${it.qty ? `<div class="item-qty">${escapeHtml(it.qty)}</div>` : ''}
+          ${it.price ? `<div class="item-price">₹${it.price}</div>` : ''}
+          <button class="del"><i class="fa-solid fa-xmark"></i></button>`;
+        li.querySelector('.checkbox').onclick = ()=>toggleDone(it.id);
+        li.querySelector('.del').onclick = ()=>deleteItem(it.id);
+        ul.appendChild(li);
+      });
+
+      if(idx===catsWithItems.length-1){
+        const totalCount = items.length, totalDone = items.filter(i=>i.done).length;
+        const priceSum = items.reduce((s,i)=> s + (i.price||0), 0);
+        const budget = currentList().budget;
+        const over = budget && priceSum > parseFloat(budget);
+        const foot = document.createElement('div');
+        foot.innerHTML = `
+          <div class="foot">
+            <span>${totalDone}/${totalCount} लिया</span>
+            <div class="progress-wrap"><div class="progress" style="width:${totalCount?(totalDone/totalCount*100):0}%"></div></div>
+          </div>
+          <div class="budget-row">
+            <span>कुल (जितनी price डाली)</span>
+            <span class="total ${over?'over':''}">₹${priceSum}</span>
+          </div>
+          <div class="budget-row2">
+            <label>बजट लिमिट ₹</label>
+            <input type="number" id="budgetInput" placeholder="0" value="${budget}">
+          </div>`;
+        card.appendChild(foot);
+      }
+      receiptContainer.appendChild(card);
+    });
+    const bInput = $('budgetInput');
+    if(bInput) bInput.addEventListener('input', ()=>{ currentList().budget = bInput.value; saveAll(); render(); });
+  }
+
+  itemTotal.textContent = items.length + ' items';
+  renderQuick();
+  renderSuggestions();
+}
+
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// ---------- clear (archives before wiping) ----------
+$('clearBtn').onclick = ()=>{
+  const items = currentList().items;
+  if(items.length===0) return;
+  if(confirm('पूरी list saaf kar du? (पिछली लिस्ट में save ho jayegi)')){
+    archive.unshift({ date: new Date().toLocaleDateString('hi-IN'), listName: currentList().name, items: JSON.parse(JSON.stringify(items)) });
+    archive = archive.slice(0,10);
+    currentList().items = [];
+    saveAll(); render();
+  }
+};
+
+// ---------- archive modal ----------
+$('archiveBtn').onclick = ()=>{
+  const box = $('archiveList');
+  box.innerHTML = archive.length===0 ? `<p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);">कोई पुरानी list nahi mili</p>` : '';
+  archive.forEach((snap,i)=>{
+    const el = document.createElement('div');
+    el.className='archive-item';
+    el.innerHTML = `<b>${snap.date}</b> — ${snap.listName} (${snap.items.length} items)<br><span style="opacity:.8">${snap.items.slice(0,5).map(x=>x.name).join(', ')}${snap.items.length>5?'...':''}</span>`;
+    el.onclick = ()=>{
+      if(confirm('ye poori list wapas current list mein daal du?')){
+        snap.items.forEach(it=> currentList().items.push({...it, id: Date.now()+Math.random(), done:false}));
+        saveAll(); render();
+        $('archiveModal').classList.remove('show');
+      }
+    };
+    box.appendChild(el);
+  });
+  $('archiveModal').classList.add('show');
+};
+$('archiveClose').onclick = ()=> $('archiveModal').classList.remove('show');
+
+// ---------- reminder ----------
+let reminderData = JSON.parse(localStorage.getItem('bazaarReminder') || 'null');
+function updateReminderIcon(){ $('reminderBtn').classList.toggle('active', !!(reminderData && reminderData.enabled)); }
+updateReminderIcon();
+$('reminderBtn').onclick = ()=>{
+  if(reminderData && reminderData.enabled) $('reminderTime').value = reminderData.time;
+  $('reminderModal').classList.add('show');
+};
+$('reminderOff').onclick = ()=>{
+  reminderData = { enabled:false };
+  localStorage.setItem('bazaarReminder', JSON.stringify(reminderData));
+  updateReminderIcon();
+  $('reminderModal').classList.remove('show');
+};
+$('reminderSave').onclick = async ()=>{
+  if('Notification' in window){
+    const perm = await Notification.requestPermission();
+    if(perm !== 'granted'){ alert('Notification permission nahi mili — reminder is browser tab ke khule रहते hi kaam karega'); }
+  }
+  reminderData = { enabled:true, time: $('reminderTime').value };
+  localStorage.setItem('bazaarReminder', JSON.stringify(reminderData));
+  updateReminderIcon();
+  $('reminderModal').classList.remove('show');
+};
+let lastFiredMinute = null;
+setInterval(()=>{
+  if(!reminderData || !reminderData.enabled) return;
+  const now = new Date();
+  const cur = now.toTimeString().slice(0,5);
+  if(cur === reminderData.time && lastFiredMinute !== cur){
+    lastFiredMinute = cur;
+    if('Notification' in window && Notification.permission === 'granted'){
+      new Notification('🧺 Bazaar List', { body:'Bazaar jaane se pehle list check kar lo!' });
+    } else {
+      showToast('🧺 Bazaar jaane se pehle list check kar lo!', ()=>{});
+    }
+  }
+}, 15000);
+
+// ---------- whatsapp share ----------
+$('waBtn').onclick = ()=>{
+  const items = currentList().items;
+  if(items.length===0){ alert('पहले list mein kuch to daalo!'); return; }
+  let msg = `🧺 *${currentList().name}*\n` + todayDate.textContent + '\n\n';
+  Object.keys(CATS).forEach(catKey=>{
+    const catItems = items.filter(i=>i.cat===catKey && !i.done);
+    if(catItems.length){
+      msg += `${CATS[catKey].emoji} *${CATS[catKey].label}*\n`;
+      catItems.forEach(it=> msg += `• ${it.name}${it.qty?' — '+it.qty:''}${it.price?' (₹'+it.price+')':''}\n`);
+      msg += '\n';
+    }
+  });
+  const priceSum = items.reduce((s,i)=>s+(i.price||0),0);
+  if(priceSum) msg += `💰 कुल: ₹${priceSum}\n`;
+  if(currentList().budget) msg += `🎯 बजट: ₹${currentList().budget}\n`;
+  msg += '\nBazaar List app se bheja gaya';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+};
+
+// ---------- PWA install hint ----------
+try{
+  const manifest = {
+    name:"Bazaar List", short_name:"Bazaar", start_url:".", display:"standalone",
+    background_color:"#E7D9BE", theme_color:"#4A5D3A",
+    icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234A5D3A'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E", sizes:"100x100", type:"image/svg+xml"}]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+}catch(e){}
+
+render();
+</script>
+</body>
+</html>
