@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
-<title>Bazaar Parchi — तेरी लिस्ट</title>
+<title>Haatnote — तेरी बाज़ार परची</title>
 <meta name="theme-color" content="#4A5D3A">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Bazaar List">
+<meta name="apple-mobile-web-app-title" content="Haatnote">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234A5D3A'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=JetBrains+Mono:wght@400;500;600;700&family=Baloo+2:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
     --kraft:#E7D9BE; --kraft-dark:#D9C6A3; --ink:#2B2620; --ink-soft:#5C5346;
@@ -51,8 +51,6 @@
   h1 i{color:var(--tamatar);font-size:21px;}
   .sub{font-size:13px;color:var(--ink-soft);font-style:italic;}
   .date-line{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px;}
-
-  /* list tabs */
   .list-tabs{display:flex;gap:7px;margin-top:14px;overflow-x:auto;padding-bottom:4px;}
   .list-tab{
     font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 12px;border-radius:16px;
@@ -76,7 +74,6 @@
   .addbtn{background:var(--sabzi);color:#fff;border:none;border-radius:6px;width:42px;font-size:18px;cursor:pointer;transition:.15s;flex-shrink:0;}
   .addbtn:active{transform:scale(0.92);background:var(--sabzi-dark);}
   .field-row2{display:flex;gap:7px;margin-top:7px;}
-  .hint-row{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);opacity:.65;margin-top:6px;text-align:right;}
 
   .cat-select{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;}
   .cat-chip{font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 10px;border-radius:20px;border:1.3px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;transition:.15s;user-select:none;}
@@ -92,6 +89,8 @@
     padding-bottom:16px;}
   .receipt-head{padding:16px 18px 10px;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;align-items:baseline;}
   .receipt-head .cat-title{font-family:'Baloo 2',cursive;font-size:17px;color:var(--sabzi-dark);display:flex;align-items:center;gap:6px;}
+  .receipt-head .cat-meta{display:flex;gap:10px;align-items:center;}
+  .receipt-head .cat-subtotal{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--haldi);font-weight:600;}
   .receipt-head .count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
 
   ul.items{list-style:none;margin:0;padding:6px 12px 4px;}
@@ -109,8 +108,7 @@
   .item-price{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--haldi);white-space:nowrap;}
   .del{background:none;border:none;color:var(--tamatar);opacity:.55;cursor:pointer;font-size:14px;padding:4px;}
   .del:active{opacity:1;}
-
-  .empty-cat{padding:16px 18px;font-size:13px;color:var(--ink-soft);font-style:italic;text-align:center;}
+.empty-cat{padding:16px 18px;font-size:13px;color:var(--ink-soft);font-style:italic;text-align:center;}
 
   .foot{padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
   .foot .progress-wrap{flex:1;height:6px;background:var(--kraft-dark);border-radius:4px;margin:0 10px;overflow:hidden;}
@@ -154,7 +152,7 @@
   .archive-item{padding:10px;border:1px dashed var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
   .archive-item:active{background:var(--kraft-dark);}
 
-  .foot-note{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);opacity:.7;letter-spacing:.03em;}
+  .foot-note{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);opacity:.8;letter-spacing:.03em;}
 
   @media (max-width:360px){h1{font-size:25px;}.item-name{font-size:14.5px;}.btn{font-size:13.5px;}}
 </style>
@@ -167,11 +165,10 @@
     <div class="icon-btn" id="archiveBtn" title="पिछली लिस्ट"><i class="fa-solid fa-clock-rotate-left"></i></div>
     <div class="icon-btn" id="darkBtn" title="Dark mode"><i class="fa-solid fa-moon"></i></div>
   </div>
-
   <div class="clip"></div>
   <header>
     <div class="eyebrow">आज की परची</div>
-    <h1><i class="fa-solid fa-basket-shopping"></i>Bazaar List</h1>
+    <h1><i class="fa-solid fa-basket-shopping"></i>Haatnote</h1>
     <div class="sub">jo bhool jaaye woh yahin likh de, bhai</div>
     <div class="date-line">
       <span id="today-date">—</span>
@@ -208,7 +205,7 @@
     <button class="btn btn-secondary btn-clear" id="clearBtn"><i class="fa-solid fa-broom"></i>List साफ़ करो</button>
   </div>
 
-  <div class="foot-note">local hi save hoti hai list — kahin bheji nahi jaati · होम स्क्रीन पर add karne ke liye browser menu se "Add to Home Screen" चुनो</div>
+  <div class="foot-note">Haatnote · local hi save hoti hai list — kahin bheji nahi jaati · होम स्क्रीन पर add karne ke liye browser menu se "Add to Home Screen" चुनो</div>
 </div>
 
 <div class="toast" id="toast">
@@ -239,7 +236,6 @@
     </div>
   </div>
 </div>
-
 <div class="modal-bg" id="newListModal">
   <div class="modal">
     <h3>📋 नई लिस्ट</h3>
@@ -250,7 +246,6 @@
     </div>
   </div>
 </div>
-
 <script>
 const CATS = {
   sabzi:{label:'सब्ज़ी', emoji:'🥬'}, dairy:{label:'दूध-दही', emoji:'🥛'},
@@ -263,7 +258,6 @@ const FREQUENT = {
   masale:['नमक','हल्दी','जीरा','लाल मिर्च']
 };
 
-// ---------- state ----------
 let lists = JSON.parse(localStorage.getItem('bazaarLists') || 'null') || {
   'default': { name:'Weekly Bazaar', items:[], budget:'' }
 };
@@ -293,7 +287,6 @@ function saveAll(){
 }
 function currentList(){ return lists[currentListId]; }
 
-// ---------- dark mode ----------
 if(localStorage.getItem('bazaarDark')==='1'){ document.body.classList.add('dark'); $('darkBtn').classList.add('active'); }
 $('darkBtn').onclick = ()=>{
   document.body.classList.toggle('dark');
@@ -302,7 +295,6 @@ $('darkBtn').onclick = ()=>{
   localStorage.setItem('bazaarDark', on ? '1':'0');
 };
 
-// ---------- list tabs ----------
 function renderTabs(){
   const tabWrap = $('listTabs');
   tabWrap.innerHTML='';
@@ -324,8 +316,7 @@ function renderTabs(){
           saveAll(); render();
         }
       };
-    }
-    tabWrap.appendChild(tab);
+    }tabWrap.appendChild(tab);
   });
   const addTab = document.createElement('div');
   addTab.className='list-tab new-tab';
@@ -344,7 +335,6 @@ $('newListSave').onclick = ()=>{
   $('newListModal').classList.remove('show');
 };
 
-// ---------- quick chips ----------
 catSelect.querySelectorAll('.cat-chip').forEach(chip=>{
   chip.onclick = ()=>{
     catSelect.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
@@ -363,7 +353,6 @@ function renderQuick(){
   });
 }
 
-// ---------- autosuggest ----------
 function renderSuggestions(){
   const dl = $('itemSuggestions');
   dl.innerHTML = itemHistory.map(n=>`<option value="${escapeHtml(n)}">`).join('');
@@ -376,7 +365,6 @@ function rememberItemName(name){
   }
 }
 
-// ---------- voice input ----------
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const micBtn = $('micBtn');
 if(SR){
@@ -398,11 +386,11 @@ if(SR){
   micBtn.onclick = ()=> alert('Ye browser voice input support nahi karta, type karke daal do 🙏');
 }
 
-// ---------- add / toggle / delete ----------
 function addItem(name, qty, price, cat){
   name = name.trim();
   if(!name) return;
-  currentList().items.push({ id: Date.now()+Math.random(), name, qty:(qty||'').trim(), price: price?parseFloat(price):null, cat, done:false });
+  const parsedPrice = price ? parseFloat(price) : null;
+  currentList().items.push({ id: Date.now()+Math.random(), name, qty:(qty||'').trim(), price: isNaN(parsedPrice)?null:parsedPrice, cat, done:false });
   rememberItemName(name);
   saveAll(); render();
 }
@@ -440,7 +428,6 @@ function showToast(msg, undoFn){
   toastTimer = setTimeout(()=> $('toast').classList.remove('show'), 4000);
 }
 
-// ---------- render ----------
 function render(){
   renderTabs();
   const items = currentList().items;
@@ -453,12 +440,16 @@ function render(){
     catsWithItems.forEach((catKey,idx)=>{
       const catItems = items.filter(i=>i.cat===catKey);
       const doneCount = catItems.filter(i=>i.done).length;
+      const catSubtotal = catItems.reduce((s,i)=> s + (i.price||0), 0);
       const card = document.createElement('div');
       card.className='receipt';
       card.innerHTML = `
         <div class="receipt-head">
           <div class="cat-title">${CATS[catKey].emoji} ${CATS[catKey].label}</div>
-          <div class="count">${doneCount}/${catItems.length}</div>
+          <div class="cat-meta">
+            ${catSubtotal ? `<span class="cat-subtotal">₹${catSubtotal}</span>` : ''}
+            <span class="count">${doneCount}/${catItems.length}</span>
+          </div>
         </div>
         <ul class="items"></ul>`;
       const ul = card.querySelector('.items');
@@ -475,7 +466,6 @@ function render(){
         li.querySelector('.del').onclick = ()=>deleteItem(it.id);
         ul.appendChild(li);
       });
-
       if(idx===catsWithItems.length-1){
         const totalCount = items.length, totalDone = items.filter(i=>i.done).length;
         const priceSum = items.reduce((s,i)=> s + (i.price||0), 0);
@@ -500,7 +490,19 @@ function render(){
       receiptContainer.appendChild(card);
     });
     const bInput = $('budgetInput');
-    if(bInput) bInput.addEventListener('input', ()=>{ currentList().budget = bInput.value; saveAll(); render(); });
+    if(bInput) {
+      bInput.addEventListener('input', ()=>{ 
+        currentList().budget = bInput.value; 
+        saveAll();
+        const priceSum = currentList().items.reduce((s,i)=> s + (i.price||0), 0);
+        const over = bInput.value && priceSum > parseFloat(bInput.value);
+        const totalEl = document.querySelector('.budget-row .total');
+        if(totalEl){
+          if(over) totalEl.classList.add('over');
+          else totalEl.classList.remove('over');
+        }
+      });
+    }
   }
 
   itemTotal.textContent = items.length + ' items';
@@ -510,7 +512,6 @@ function render(){
 
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-// ---------- clear (archives before wiping) ----------
 $('clearBtn').onclick = ()=>{
   const items = currentList().items;
   if(items.length===0) return;
@@ -522,7 +523,6 @@ $('clearBtn').onclick = ()=>{
   }
 };
 
-// ---------- archive modal ----------
 $('archiveBtn').onclick = ()=>{
   const box = $('archiveList');
   box.innerHTML = archive.length===0 ? `<p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);">कोई पुरानी list nahi mili</p>` : '';
@@ -543,7 +543,6 @@ $('archiveBtn').onclick = ()=>{
 };
 $('archiveClose').onclick = ()=> $('archiveModal').classList.remove('show');
 
-// ---------- reminder ----------
 let reminderData = JSON.parse(localStorage.getItem('bazaarReminder') || 'null');
 function updateReminderIcon(){ $('reminderBtn').classList.toggle('active', !!(reminderData && reminderData.enabled)); }
 updateReminderIcon();
@@ -575,18 +574,17 @@ setInterval(()=>{
   if(cur === reminderData.time && lastFiredMinute !== cur){
     lastFiredMinute = cur;
     if('Notification' in window && Notification.permission === 'granted'){
-      new Notification('🧺 Bazaar List', { body:'Bazaar jaane se pehle list check kar lo!' });
+      new Notification('🧺 Haatnote', { body:'Bazaar jaane se pehle list check kar lo!' });
     } else {
       showToast('🧺 Bazaar jaane se pehle list check kar lo!', ()=>{});
     }
   }
 }, 15000);
 
-// ---------- whatsapp share ----------
 $('waBtn').onclick = ()=>{
   const items = currentList().items;
   if(items.length===0){ alert('पहले list mein kuch to daalo!'); return; }
-  let msg = `🧺 *${currentList().name}*\n` + todayDate.textContent + '\n\n';
+  let msg = `🧺 *${currentList().name} (Haatnote)*\n` + todayDate.textContent + '\n\n';
   Object.keys(CATS).forEach(catKey=>{
     const catItems = items.filter(i=>i.cat===catKey && !i.done);
     if(catItems.length){
@@ -598,14 +596,13 @@ $('waBtn').onclick = ()=>{
   const priceSum = items.reduce((s,i)=>s+(i.price||0),0);
   if(priceSum) msg += `💰 कुल: ₹${priceSum}\n`;
   if(currentList().budget) msg += `🎯 बजट: ₹${currentList().budget}\n`;
-  msg += '\nBazaar List app se bheja gaya';
+  msg += '\nHaatnote app se bheja gaya';
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 };
 
-// ---------- PWA install hint ----------
 try{
   const manifest = {
-    name:"Bazaar List", short_name:"Bazaar", start_url:".", display:"standalone",
+    name:"Haatnote", short_name:"Haatnote", start_url:".", display:"standalone",
     background_color:"#E7D9BE", theme_color:"#4A5D3A",
     icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234A5D3A'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E", sizes:"100x100", type:"image/svg+xml"}]
   };
@@ -620,3 +617,5 @@ render();
 </script>
 </body>
 </html>
+
+    
