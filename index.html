@@ -158,6 +158,23 @@
 </style>
 </head>
 <body>
+  <div id="authScreen" style="display:none;">
+  <div style="max-width:420px;margin:60px auto;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:18px;">
+    <h2 style="margin-top:0;">🔐 Haatnote</h2>
+    <p>Login karke apni shopping lists save karo.</p>
+
+    <input id="authEmail" type="email" placeholder="Email"
+      style="width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid var(--line);">
+
+    <input id="authPassword" type="password" placeholder="Password"
+      style="width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid var(--line);">
+
+    <button id="loginBtn" type="button">Login</button>
+    <button id="signupBtn" type="button">Sign Up</button>
+
+    <p id="authMsg"></p>
+  </div>
+  </div>
 <div class="wrap">
 
   <div class="topbar">
@@ -255,6 +272,61 @@ const SUPABASE_URL = 'https://kvenpgahgmelhgklsqnw.supabase.co';
       SUPABASE_URL,
       SUPABASE_KEY
       );
+        const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authMsg = document.getElementById('authMsg');
+
+document.getElementById('signupBtn').addEventListener('click', async () => {
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  if (!email || !password) {
+    authMsg.textContent = 'Email aur password enter karo.';
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signUp({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    authMsg.textContent = error.message;
+  } else {
+    authMsg.textContent = '✅ Signup successful! Email check karke verify karo.';
+  }
+});
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  if (!email || !password) {
+    authMsg.textContent = 'Email aur password enter karo.';
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    authMsg.textContent = error.message;
+  }
+});
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+  const authScreen = document.getElementById('authScreen');
+  const app = document.querySelector('.wrap');
+
+  if (session) {
+    authScreen.style.display = 'none';
+    app.style.display = 'block';
+  } else {
+    authScreen.style.display = 'block';
+    app.style.display = 'none';
+  }
+});
   const CATS= {
   sabzi:{label:'सब्ज़ी', emoji:'🥬'}, dairy:{label:'दूध-दही', emoji:'🥛'},
   kirana:{label:'किराना', emoji:'🛒'}, masale:{label:'मसाले', emoji:'🌶️'}, other:{label:'और सामान', emoji:'📦'}
