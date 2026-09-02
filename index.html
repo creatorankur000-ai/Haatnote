@@ -246,8 +246,16 @@
     </div>
   </div>
 </div>
-<script>
-const CATS = {
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+const SUPABASE_URL = 'https://kvenpgahgmelhgklsqnw.supabase.co';
+ const SUPABASE_KEY = 'sb_publishable_ROjdEeDc4iSkxqMCCoK7YA_JWH6rmqD';
+  const supabaseClient= 
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+      );
+  const CATS= {
   sabzi:{label:'सब्ज़ी', emoji:'🥬'}, dairy:{label:'दूध-दही', emoji:'🥛'},
   kirana:{label:'किराना', emoji:'🛒'}, masale:{label:'मसाले', emoji:'🌶️'}, other:{label:'और सामान', emoji:'📦'}
 };
